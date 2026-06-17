@@ -13,38 +13,55 @@ const SESSION_KEY = 'torra_platform_session';
 
 // Direct initial preseeded credentials
 export const PRESEEDED_ADMIN = {
-  email: 'hello.meareg@gmail.com',
-  name: 'Admin Meareg',
+  email: 'basleltafese@gmail.com',
+  name: 'Admin Baslel',
   role: 'admin' as const
 };
 
 // Seed initial users if none exist
 function seedDatabase() {
   try {
+    const defaultPassword = 'TorraAdmin#2026!Secured';
+    let users = [];
     const existingUsers = localStorage.getItem(USERS_KEY);
-    if (!existingUsers) {
-      // Create a default admin user and a customer user for mock/trial purposes
-      const preseededUsers = [
-        {
-          id: 'user-admin',
-          email: PRESEEDED_ADMIN.email,
-          name: PRESEEDED_ADMIN.name,
-          role: PRESEEDED_ADMIN.role,
-          createdAt: new Date().toISOString(),
-          // simple secure string check
-          passwordHash: 'admin123'
-        },
-        {
-          id: 'user-customer',
-          email: 'customer@torra.com',
-          name: 'Jane Doe',
-          role: 'user' as const,
-          createdAt: new Date().toISOString(),
-          passwordHash: 'user123'
-        }
-      ];
-      localStorage.setItem(USERS_KEY, JSON.stringify(preseededUsers));
+    if (existingUsers) {
+      try {
+        users = JSON.parse(existingUsers);
+      } catch {
+        users = [];
+      }
     }
+    
+    // Seamlessly find and update or insert the primary administrator group
+    const adminIdx = users.findIndex((u: any) => u.id === 'user-admin' || u.role === 'admin');
+    if (adminIdx > -1) {
+      users[adminIdx].email = PRESEEDED_ADMIN.email;
+      users[adminIdx].name = PRESEEDED_ADMIN.name;
+      users[adminIdx].passwordHash = defaultPassword;
+    } else {
+      users.push({
+        id: 'user-admin',
+        email: PRESEEDED_ADMIN.email,
+        name: PRESEEDED_ADMIN.name,
+        role: PRESEEDED_ADMIN.role,
+        createdAt: new Date().toISOString(),
+        passwordHash: defaultPassword
+      });
+    }
+
+    // Ensure customer user exists
+    if (!users.some((u: any) => u.id === 'user-customer')) {
+      users.push({
+        id: 'user-customer',
+        email: 'customer@torra.com',
+        name: 'Jane Doe',
+        role: 'user' as const,
+        createdAt: new Date().toISOString(),
+        passwordHash: 'user123'
+      });
+    }
+
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
 
     const existingReviews = localStorage.getItem(REVIEWS_KEY);
     if (!existingReviews) {
