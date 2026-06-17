@@ -1,0 +1,6 @@
+{
+  "name": "Torra Real Estate - Review Studio",
+  "description": "An elegant review collection system bespoke for Torra Real Estate and Yohannes, featuring secure client submission and study ledger tools.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
